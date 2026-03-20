@@ -1,0 +1,37 @@
+# Data
+data/raw/
+data/processed/
+
+# Model artifacts
+*.pkl
+models/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv*/
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Outputs (keep dir, ignore generated files)
+outputs/*.png
+
+# Environment
+.env
