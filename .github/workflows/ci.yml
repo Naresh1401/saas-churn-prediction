@@ -1,35 +1,27 @@
-name: CI — SaaS Churn Prediction
+name: CI
 
 on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
+  workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# Shared checks from https://github.com/Naresh1401/github-cicd-workflows
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+  python:
+    name: Python
+    uses: Naresh1401/github-cicd-workflows/.github/workflows/python-ci.yml@v1
+    with:
+      setup-command: flake8 src/ api/ tests/ --max-line-length 120 && python -m src.generate_data && python -m src.train
+      test-command: python -m pytest tests/ -v --tb=short
 
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Lint with flake8
-        run: flake8 src/ api/ tests/ --max-line-length 120
-
-      - name: Generate data
-        run: python -m src.generate_data
-
-      - name: Train models
-        run: python -m src.train
-
-      - name: Run tests
-        run: pytest tests/ -v --tb=short
+  repo-lint:
+    name: Repository lint
+    uses: Naresh1401/github-cicd-workflows/.github/workflows/repo-lint.yml@v1
